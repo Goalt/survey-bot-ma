@@ -1,0 +1,30 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: survey-bot-ma
+  name: survey-bot-ma
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: survey-bot-ma
+  template:
+    metadata:
+      labels:
+        app: survey-bot-ma
+    spec:
+      containers:
+      - env:
+        - name: RELEASE_VERSION
+          value: ${DRONE_TAG}
+        image: localhost:32000/survey-bot-ma:latest
+        imagePullPolicy: Always
+        name: survey-bot-ma
+        ports:
+        - containerPort: 80
+          protocol: TCP
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 0

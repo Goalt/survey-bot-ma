@@ -1,0 +1,10 @@
+services:
+  surve-bot-ma-dev:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - /home/vboxuser/.netrc:/home/codespace/.netrc
+      - ..:/workspace:cached
+    ports:
+      - 5173:5173

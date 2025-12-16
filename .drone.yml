@@ -1,0 +1,39 @@
+---
+kind: pipeline
+type: kubernetes
+name: default
+steps:
+- name: build
+  image: plugins/docker
+  settings:
+    registry: http://registry.container-registry:5000
+    repo: registry.container-registry:5000/survey-bot-ma
+    tags: latest
+    insecure: true
+    mtu: 1000
+    build_args_from_env:
+  when:
+    target: 
+    - production
+- name: deploy
+  image: localhost:32000/drone-kubectl:latest
+  pull: if-not-exists
+  settings:
+    k8s_server:
+      from_secret: k8s_server
+    k8s_token:
+      from_secret: k8s_token
+    k8s_ca_crt:
+      from_secret: k8s_ca_crt
+    k8s_skip_tls: false
+    namespace: default
+    templates:
+      - ./prod.yaml
+    app_name: ${DRONE_REPO_NAME}
+  commands:
+    - apt-get update
+    - apt-get -y install gettext-base
+    - DRONE_TAG=${DRONE_TAG} envsubst < ./kubernetes/app.yaml | kubectl apply -f -
+  when:
+    target: 
+    - production

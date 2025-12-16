@@ -1,0 +1,27 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.191.0/containers/docker-existing-docker-compose
+// If you want to run as a non-root user in the container, see .devcontainer/docker-compose.yml.
+{
+	"name": "surve-bot-ma-dev",
+	"dockerComposeFile": [
+		"docker-compose.yml"
+	],
+	"service": "surve-bot-ma-dev",
+	"workspaceFolder": "/workspace",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"eamodio.gitlens",
+				"GitHub.copilot",
+				"well-ar.plantuml",
+				"netcorext.uuid-generator",
+				"humao.rest-client",
+				"github.copilot-workspace"
+			]
+		}
+	},
+	
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	"forwardPorts": [
+	]
+}
