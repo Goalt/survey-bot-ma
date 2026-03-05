@@ -21,10 +21,12 @@ export function init(debug: boolean): void {
   // Also, configure the package.
   initSDK();
 
-  // Add Eruda if needed.
-  // debug && import('eruda')
-  //   .then((lib) => lib.default.init())
-  //   .catch(console.error);
+  // Add vConsole if enabled via VITE_VCONSOLE env variable.
+  if (import.meta.env.VITE_VCONSOLE === 'true') {
+    import('vconsole')
+      .then((lib) => new lib.default())
+      .catch(console.error);
+  }
 
   // Check if all required components are supported.
   if (!backButton.isSupported() || !miniApp.isSupported()) {
