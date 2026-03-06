@@ -22,7 +22,11 @@ export function init(debug: boolean): void {
   // Also, configure the package.
   initSDK();
 
-  const vConsoleEnv = import.meta.env.VITE_VCONSOLE;
+  const runtimeVConsoleEnvRaw = window.__APP_CONFIG__?.VITE_VCONSOLE;
+  const runtimeVConsoleEnv = runtimeVConsoleEnvRaw === 'true' || runtimeVConsoleEnvRaw === 'false'
+    ? runtimeVConsoleEnvRaw
+    : undefined;
+  const vConsoleEnv = runtimeVConsoleEnv ?? import.meta.env.VITE_VCONSOLE;
   const vConsoleEnvLog = typeof vConsoleEnv === 'undefined' ? '(not set)' : vConsoleEnv;
   console.info(`[init] VITE_VCONSOLE=${vConsoleEnvLog}`);
 

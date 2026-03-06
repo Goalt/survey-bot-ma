@@ -50,6 +50,8 @@ RUN rm -rf ./*
 
 # Copy static assets from builder stage
 COPY --from=build /app/dist .
+COPY docker/40-env-config.sh /docker-entrypoint.d/40-env-config.sh
+RUN chmod +x /docker-entrypoint.d/40-env-config.sh
 
 # Containers run nginx with global directives and daemon off
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+CMD ["nginx", "-g", "daemon off;"]
