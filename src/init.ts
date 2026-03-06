@@ -23,7 +23,8 @@ export function init(debug: boolean): void {
   initSDK();
 
   const vConsoleEnv = import.meta.env.VITE_VCONSOLE;
-  console.info(`[init] VITE_VCONSOLE=${vConsoleEnv ?? 'undefined'}`);
+  const vConsoleEnvLog = typeof vConsoleEnv === 'undefined' ? '(not set)' : vConsoleEnv;
+  console.info(`[init] VITE_VCONSOLE=${vConsoleEnvLog}`);
 
   // Add vConsole if enabled via VITE_VCONSOLE env variable.
   if (vConsoleEnv === 'true') {
