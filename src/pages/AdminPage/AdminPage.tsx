@@ -3,12 +3,19 @@ import { BACKEND_API_URL } from "@/env";
 import { useEffect, useState } from "react";
 import * as Sentry from "@sentry/react";
 
-import { Snackbar } from "@telegram-apps/telegram-ui";
+import {
+  Button,
+  Caption,
+  Cell,
+  Input,
+  List,
+  Placeholder,
+  Section,
+  Snackbar,
+  Spinner,
+  Text,
+} from "@telegram-apps/telegram-ui";
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
-
-import { Card, CardContent } from "@/components/ui/card.tsx";
-import { Input } from "@/components/ui/input.tsx";
-import { Button, Spinner } from "@telegram-apps/telegram-ui";
 
 import { Page } from '@/pages/Page.tsx';
 
@@ -106,60 +113,58 @@ export default function UserList() {
 
     return (
         <Page back={true}>
-            <div className="p-4 max-w-2xl mx-auto">
-                {showError && <Snackbar description="Some Error Happened" duration={10000} onClose={() => console.log("")}></Snackbar>}
-                <h1 className="text-xl font-bold mb-4 text-black">Users ({totalUsers})</h1>
-                <Input
-                    className="mb-4 text-black"
-                    placeholder="Search users..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    onKeyPress={(e) => handleKeyPress(e)}
-                />
+            {showError && <Snackbar description="Some Error Happened" duration={10000} onClose={() => setShowError(false)} />}
+            <List>
+                <Section header={<Section.Header large>Users ({totalUsers})</Section.Header>}>
+                    <Input
+                        header="Search"
+                        placeholder="Search users..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        onKeyPress={(e) => handleKeyPress(e)}
+                    />
+                </Section>
                 {isLoaderSpinning ? (
-                    <div style={{ display: "flex", justifyContent: "center", alignContent: "center", justifyItems: "center", alignItems: "center", height: "50vh" }}>
+                    <Placeholder>
                         <Spinner size="l" />
-                    </div>
+                    </Placeholder>
                 ) : (
-                    <div>
+                    <Section>
                         {users.map((user) => (
-                            <Card key={user.guid} className="mb-3">
-                                <CardContent className="p-4">
+                            <Cell
+                                key={user.guid}
+                                subtitle={
+                                    <>
+                                        <Text Component="a" href={`https://t.me/${user.nick_name}`} style={{ color: 'var(--tg-theme-link-color)' }}>
+                                            @{user.nick_name}
+                                        </Text>
+                                    </>
+                                }
+                                description={
                                     <div>
-                                        <h2 className="text-lg font-semibold">{user.nick_name}</h2>
-                                        <p className="text-gray-600 text-sm">
-                                            Telegram:{" "}
-                                            <a
-                                                href={`https://t.me/${user.nick_name}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-blue-600 underline"
-                                            >
-                                                @{user.nick_name}
-                                            </a>
-                                        </p>
-                                        <p className="text-gray-600 text-sm">Completed Tests: {user.completed_tests}</p>
-                                        <p className="text-gray-600 text-sm">Answered Questions: {user.answered_questions}</p>
-                                        <p className="text-gray-600 text-sm">Registered: {user.registered_at}</p>
-                                        <p className="text-gray-600 text-sm">Last Activity: {user.last_activity}</p>
+                                        <Caption>Completed Tests: {user.completed_tests}</Caption>
+                                        <Caption>Answered Questions: {user.answered_questions}</Caption>
+                                        <Caption>Registered: {user.registered_at}</Caption>
+                                        <Caption>Last Activity: {user.last_activity}</Caption>
                                     </div>
-                                </CardContent>
-                            </Card>
+                                }
+                                multiline
+                            >
+                                {user.nick_name}
+                            </Cell>
                         ))}
-                        {users.length < totalUsers ? (
-                            <div style={{ display: "flex", justifyContent: "center" }}>
+                        {users.length < totalUsers && (
+                            <div style={{ display: "flex", justifyContent: "center", padding: '12px' }}>
                                 {isLoadMoreLoaderSpinning ? (
-                                    <Spinner size="s" />    
-                                ): (
+                                    <Spinner size="s" />
+                                ) : (
                                     <Button mode="plain" onClick={() => setOffset(offset + limit)}>Load More</Button>
                                 )}
                             </div>
-                        ) : (
-                            <div></div>
                         )}
-                    </div>
+                    </Section>
                 )}
-            </div>
+            </List>
         </Page>
     );
 }

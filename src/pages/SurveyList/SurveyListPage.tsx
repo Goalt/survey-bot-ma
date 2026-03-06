@@ -3,9 +3,16 @@ import { BACKEND_API_URL } from "@/env";
 import React, { useState, useEffect } from "react";
 import * as Sentry from "@sentry/react";
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
-import { Snackbar } from "@telegram-apps/telegram-ui";
-import { Button as AdminButton, Spinner } from "@telegram-apps/telegram-ui";
-import { Card, CardContent } from "@/components/ui/card.tsx";
+import {
+  Accordion,
+  Cell,
+  List,
+  Placeholder,
+  Section,
+  Snackbar,
+  Spinner,
+  Text,
+} from "@telegram-apps/telegram-ui";
 import { Link } from '@/components/Link/Link.tsx';
 import { Page } from '@/pages/Page.tsx';
 
@@ -90,44 +97,42 @@ const IndexPage: React.FC = () => {
 
   return (
     <Page back={false}>
-      <div className="p-6 max-w-2xl mx-auto relative">
-        {showError && <Snackbar description="Some Error Happened" duration={10000} onClose={() => console.log("")}></Snackbar>}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", justifyItems: "center" }}>
-          <div
-            style={{ display: "flex", justifyContent: "center", alignContent: "center", justifyItems: "center", alignItems: "center" }}
-            className="text-2xl font-bold mb-1 text-black">Completed Surveys</div>
-          {isAdmin && (
-            <Link to="/admin-page">
-              <AdminButton mode="plain">Admin</AdminButton>
+      {showError && <Snackbar description="Some Error Happened" duration={10000} onClose={() => setShowError(false)} />}
+      <List>
+        {isAdmin && (
+          <Section>
+            <Link to="/admin-page" style={{ textDecoration: 'none' }}>
+              <Cell after={<span style={{ color: 'var(--tg-theme-link-color)' }}>→</span>}>
+                Admin Panel
+              </Cell>
             </Link>
-          )}
-        </div>
-        {isLoaderSpinning ? (
-          <div style={{ display: "flex", justifyContent: "center", alignContent: "center", justifyItems: "center", alignItems: "center", height: "50vh" }}>
-            <Spinner size="l" />
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {surveys.map((survey) => (
-              <Card key={survey.id} className="p-4">
-                <CardContent>
-                  <div className="flex justify-between items-center">
-                    <div onClick={() => toggleResults(survey.id)}>
-                      <h2 className="text-lg font-semibold">{survey.name}</h2>
-                      <p className="text-md text-gray-600">{survey.description}</p>
-                    </div>
-                  </div>
-                  {openSurvey === survey.id && (
-                    <div className="text-sm mt-2 p-2 border-t text-gray-800">
-                      {survey.results}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          </Section>
         )}
-      </div>
+        <Section header={<Section.Header large>Completed Surveys</Section.Header>}>
+          {isLoaderSpinning ? (
+            <Placeholder>
+              <Spinner size="l" />
+            </Placeholder>
+          ) : (
+            surveys.map((survey) => (
+              <Accordion
+                key={survey.id}
+                expanded={openSurvey === survey.id}
+                onChange={() => toggleResults(survey.id)}
+              >
+                <Accordion.Summary subtitle={survey.description}>
+                  {survey.name}
+                </Accordion.Summary>
+                <Accordion.Content>
+                  <div style={{ padding: '12px 16px' }}>
+                    <Text>{survey.results}</Text>
+                  </div>
+                </Accordion.Content>
+              </Accordion>
+            ))
+          )}
+        </Section>
+      </List>
     </Page>
   );
 };
