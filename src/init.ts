@@ -9,6 +9,7 @@ import {
   $debug,
   init as initSDK,
 } from '@telegram-apps/sdk-react';
+import VConsole from 'vconsole';
 
 /**
  * Initializes the application and configures its dependencies.
@@ -23,9 +24,11 @@ export function init(debug: boolean): void {
 
   // Add vConsole if enabled via VITE_VCONSOLE env variable.
   if (import.meta.env.VITE_VCONSOLE === 'true') {
-    import('vconsole')
-      .then((lib) => new lib.default())
-      .catch(console.error);
+    try {
+      new VConsole();
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   // Check if all required components are supported.
