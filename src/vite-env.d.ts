@@ -11,5 +11,7 @@ interface ImportMeta {
 interface Window {
   __APP_CONFIG__?: {
     VITE_VCONSOLE?: string;
+    API_URL?: string;
+    SENTRY_DSN?: string;
   };
 }
