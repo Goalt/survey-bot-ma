@@ -9,6 +9,7 @@ import {
   $debug,
   init as initSDK,
 } from '@telegram-apps/sdk-react';
+import VConsole from 'vconsole';
 
 /**
  * Initializes the application and configures its dependencies.
@@ -21,10 +22,22 @@ export function init(debug: boolean): void {
   // Also, configure the package.
   initSDK();
 
-  // Add Eruda if needed.
-  // debug && import('eruda')
-  //   .then((lib) => lib.default.init())
-  //   .catch(console.error);
+  const runtimeVConsoleEnvRaw = window.__APP_CONFIG__?.VITE_VCONSOLE;
+  const runtimeVConsoleEnv = runtimeVConsoleEnvRaw === 'true' || runtimeVConsoleEnvRaw === 'false'
+    ? runtimeVConsoleEnvRaw
+    : undefined;
+  const vConsoleEnv = runtimeVConsoleEnv ?? import.meta.env.VITE_VCONSOLE;
+  const vConsoleEnvLog = typeof vConsoleEnv === 'undefined' ? '(not set)' : vConsoleEnv;
+  console.info(`[init] VITE_VCONSOLE=${vConsoleEnvLog}`);
+
+  // Add vConsole if enabled via VITE_VCONSOLE env variable.
+  if (vConsoleEnv === 'true') {
+    try {
+      new VConsole();
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   // Check if all required components are supported.
   if (!backButton.isSupported() || !miniApp.isSupported()) {

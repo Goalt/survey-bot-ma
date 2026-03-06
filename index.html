@@ -41,6 +41,7 @@
   <div id="wrap">
     <div id="content">
       <div id="root"></div>
+      <script src="/env-config.js" onerror="console.warn('[init] /env-config.js failed to load, using build-time env only')"></script>
       <script src="/src/index.tsx" type="module"></script>
     </div>
   </div>
