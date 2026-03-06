@@ -113,12 +113,12 @@ export default function UserList() {
 
     return (
         <Page back={true}>
-            {showError && <Snackbar description="Some Error Happened" duration={10000} onClose={() => setShowError(false)} />}
+            {showError && <Snackbar description="Произошла ошибка" duration={10000} onClose={() => setShowError(false)} />}
             <List>
-                <Section header={<Section.Header large>Users ({totalUsers})</Section.Header>}>
+                <Section header={<Section.Header large>Пользователи ({totalUsers})</Section.Header>}>
                     <Input
-                        header="Search"
-                        placeholder="Search users..."
+                        header="Поиск"
+                        placeholder="Поиск пользователей..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         onKeyPress={(e) => handleKeyPress(e)}
@@ -142,10 +142,10 @@ export default function UserList() {
                                 }
                                 description={
                                     <div>
-                                        <Caption>Completed Tests: {user.completed_tests}</Caption>
-                                        <Caption>Answered Questions: {user.answered_questions}</Caption>
-                                        <Caption>Registered: {user.registered_at}</Caption>
-                                        <Caption>Last Activity: {user.last_activity}</Caption>
+                                        <Caption>Пройдено тестов: {user.completed_tests}</Caption>
+                                        <Caption>Отвечено на вопросов: {user.answered_questions}</Caption>
+                                        <Caption>Зарегистрирован: {user.registered_at}</Caption>
+                                        <Caption>Последняя активность: {user.last_activity}</Caption>
                                     </div>
                                 }
                                 multiline
@@ -158,7 +158,7 @@ export default function UserList() {
                                 {isLoadMoreLoaderSpinning ? (
                                     <Spinner size="s" />
                                 ) : (
-                                    <Button mode="plain" onClick={() => setOffset(offset + limit)}>Load More</Button>
+                                    <Button mode="plain" onClick={() => setOffset(offset + limit)}>Загрузить ещё</Button>
                                 )}
                             </div>
                         )}

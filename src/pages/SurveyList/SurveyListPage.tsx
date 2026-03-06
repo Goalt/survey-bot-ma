@@ -97,18 +97,18 @@ const IndexPage: React.FC = () => {
 
   return (
     <Page back={false}>
-      {showError && <Snackbar description="Some Error Happened" duration={10000} onClose={() => setShowError(false)} />}
+      {showError && <Snackbar description="Произошла ошибка" duration={10000} onClose={() => setShowError(false)} />}
       <List>
         {isAdmin && (
           <Section>
             <Link to="/admin-page" style={{ textDecoration: 'none' }}>
               <Cell after={<span style={{ color: 'var(--tg-theme-link-color)' }}>→</span>}>
-                Admin Panel
+                Панель администратора
               </Cell>
             </Link>
           </Section>
         )}
-        <Section header={<Section.Header large>Completed Surveys</Section.Header>}>
+        <Section header={<Section.Header large>Пройденные опросы</Section.Header>}>
           {isLoaderSpinning ? (
             <Placeholder>
               <Spinner size="l" />
