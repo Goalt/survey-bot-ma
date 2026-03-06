@@ -2,6 +2,8 @@
 
 interface ImportMetaEnv {
   readonly VITE_VCONSOLE: 'true' | 'false' | undefined;
+  readonly VITE_API_URL: string | undefined;
+  readonly VITE_SENTRY_DSN: string | undefined;
 }
 
 interface ImportMeta {
