@@ -14,8 +14,8 @@ case "${VITE_VCONSOLE:-}" in
     ;;
 esac
 
-API_URL_VALUE="$(escape_js_string "${API_URL:-}")"
-SENTRY_DSN_VALUE="$(escape_js_string "${SENTRY_DSN:-}")"
+API_URL_VALUE="$(escape_js_string "${API_URL:-${VITE_API_URL:-}}")"
+SENTRY_DSN_VALUE="$(escape_js_string "${SENTRY_DSN:-${VITE_SENTRY_DSN:-}}")"
 
 if [ -n "${VITE_VCONSOLE_VALUE}" ]; then
   VITE_VCONSOLE_CONFIG_LINE="  VITE_VCONSOLE: \"${VITE_VCONSOLE_VALUE}\","
