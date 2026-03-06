@@ -1,4 +1,5 @@
 import "./instrument";
+import { BACKEND_API_URL, SENTRY_DSN } from "./env";
 
 import {
   backButton,
@@ -21,6 +22,10 @@ export function init(debug: boolean): void {
   // Initialize special event handlers for Telegram Desktop, Android, iOS, etc.
   // Also, configure the package.
   initSDK();
+
+  console.info(
+    `[init] API_URL=${BACKEND_API_URL ? '(set)' : '(not set)'}, SENTRY_DSN=${SENTRY_DSN ? '(set)' : '(not set)'}`,
+  );
 
   const runtimeVConsoleEnvRaw = window.__APP_CONFIG__?.VITE_VCONSOLE;
   const runtimeVConsoleEnv = runtimeVConsoleEnvRaw === 'true' || runtimeVConsoleEnvRaw === 'false'

@@ -87,11 +87,11 @@ The app will be available at `https://localhost:5173`
 
 ### Environment Configuration
 
-Update `src/env.ts` with your backend API URL:
+Set runtime environment variables for container startup:
 
-```typescript
-const BACKEND_API_URL = 'your-backend-api-url';
-const ENVIRONMENT = 'development'; // or 'production'
+```bash
+API_URL=https://your-backend-api-url
+SENTRY_DSN=https://your-sentry-dsn
 ```
 
 ## 📜 Available Scripts
