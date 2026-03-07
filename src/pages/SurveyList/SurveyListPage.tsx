@@ -3,11 +3,19 @@ import { BACKEND_API_URL } from "@/env";
 import React, { useState, useEffect } from "react";
 import * as Sentry from "@sentry/react";
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
-import { Snackbar } from "@telegram-apps/telegram-ui";
-import { Button as AdminButton, Spinner } from "@telegram-apps/telegram-ui";
-import { Card, CardContent } from "@/components/ui/card.tsx";
+import { Snackbar, Spinner } from "@telegram-apps/telegram-ui";
 import { Link } from '@/components/Link/Link.tsx';
 import { Page } from '@/pages/Page.tsx';
+import { ClipboardList, ChevronDown, ChevronUp, Settings } from "lucide-react";
+
+const tg = {
+  bg: 'var(--tg-theme-bg-color, #ffffff)',
+  text: 'var(--tg-theme-text-color, #000000)',
+  hint: 'var(--tg-theme-hint-color, #999999)',
+  secondaryBg: 'var(--tg-theme-secondary-bg-color, #f4f4f4)',
+  button: 'var(--tg-theme-button-color, #3390ec)',
+  buttonText: 'var(--tg-theme-button-text-color, #ffffff)',
+};
 
 const IndexPage: React.FC = () => {
   const [openSurvey, setOpenSurvey] = useState<number | null>(null);
@@ -39,7 +47,6 @@ const IndexPage: React.FC = () => {
         }
 
         setSurveys(data.surveys);
-
       })
       .catch((error) => {
         Sentry.captureMessage("Network error fetching surveys, error: " + error.message, "error");
@@ -80,8 +87,7 @@ const IndexPage: React.FC = () => {
         Sentry.captureSession();
 
         setShowError(true);
-      }
-      )
+      });
   }, []);
 
   const toggleResults = (id: number) => {
@@ -90,43 +96,91 @@ const IndexPage: React.FC = () => {
 
   return (
     <Page back={false}>
-      <div className="p-6 max-w-2xl mx-auto relative">
-        {showError && <Snackbar description="Some Error Happened" duration={10000} onClose={() => console.log("")}></Snackbar>}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", justifyItems: "center" }}>
-          <div
-            style={{ display: "flex", justifyContent: "center", alignContent: "center", justifyItems: "center", alignItems: "center" }}
-            className="text-2xl font-bold mb-1 text-black">Completed Surveys</div>
+      <div style={{ minHeight: '100vh', backgroundColor: tg.bg }}>
+        {showError && (
+          <Snackbar description="Failed to load surveys" duration={10000} onClose={() => setShowError(false)} />
+        )}
+
+        {/* Header */}
+        <div
+          className="sticky top-0 z-10 flex items-center justify-between px-4 py-3"
+          style={{ backgroundColor: tg.bg, borderBottom: `1px solid ${tg.secondaryBg}` }}
+        >
+          <div className="flex items-center gap-2">
+            <ClipboardList size={22} style={{ color: tg.button }} />
+            <h1 className="text-xl font-bold" style={{ color: tg.text }}>
+              Surveys
+            </h1>
+          </div>
           {isAdmin && (
             <Link to="/admin-page">
-              <AdminButton mode="plain">Admin</AdminButton>
+              <button
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium"
+                style={{ backgroundColor: tg.button, color: tg.buttonText }}
+              >
+                <Settings size={13} />
+                Admin
+              </button>
             </Link>
           )}
         </div>
-        {isLoaderSpinning ? (
-          <div style={{ display: "flex", justifyContent: "center", alignContent: "center", justifyItems: "center", alignItems: "center", height: "50vh" }}>
-            <Spinner size="l" />
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {surveys.map((survey) => (
-              <Card key={survey.id} className="p-4">
-                <CardContent>
-                  <div className="flex justify-between items-center">
-                    <div onClick={() => toggleResults(survey.id)}>
-                      <h2 className="text-lg font-semibold">{survey.name}</h2>
-                      <p className="text-md text-gray-600">{survey.description}</p>
+
+        <div className="p-4 max-w-2xl mx-auto">
+          {isLoaderSpinning ? (
+            <div className="flex items-center justify-center" style={{ height: '50vh' }}>
+              <Spinner size="l" />
+            </div>
+          ) : surveys.length === 0 ? (
+            <div
+              className="flex flex-col items-center justify-center gap-3 py-20"
+              style={{ color: tg.hint }}
+            >
+              <ClipboardList size={52} strokeWidth={1.25} />
+              <p className="text-base font-medium">No surveys yet</p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3 mt-2">
+              {surveys.map((survey) => (
+                <div
+                  key={survey.id}
+                  className="rounded-2xl overflow-hidden"
+                  style={{ backgroundColor: tg.secondaryBg }}
+                >
+                  <button
+                    className="w-full text-left flex items-center justify-between gap-3 px-4 py-4"
+                    onClick={() => toggleResults(survey.id)}
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className="text-base font-semibold truncate" style={{ color: tg.text }}>
+                        {survey.name}
+                      </p>
+                      {survey.description && (
+                        <p className="text-sm mt-0.5 truncate" style={{ color: tg.hint }}>
+                          {survey.description}
+                        </p>
+                      )}
                     </div>
-                  </div>
+                    <div className="flex-shrink-0" style={{ color: tg.hint }}>
+                      {openSurvey === survey.id
+                        ? <ChevronUp size={18} />
+                        : <ChevronDown size={18} />
+                      }
+                    </div>
+                  </button>
+
                   {openSurvey === survey.id && (
-                    <div className="text-sm mt-2 p-2 border-t text-gray-800">
+                    <div
+                      className="px-4 pb-4 pt-1 text-sm"
+                      style={{ borderTop: `1px solid ${tg.bg}`, color: tg.text }}
+                    >
                       {survey.results}
                     </div>
                   )}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </Page>
   );
