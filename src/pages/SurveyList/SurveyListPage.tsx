@@ -46,7 +46,7 @@ const IndexPage: React.FC = () => {
           return;
         }
 
-        setSurveys(data.surveys);
+        setSurveys(data.surveys || []);
       })
       .catch((error) => {
         Sentry.captureMessage("Network error fetching surveys, error: " + error.message, "error");
